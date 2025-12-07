@@ -1,7 +1,7 @@
 import sheetsGet from "./sheetsGet.js"
-import { bot_consts } from "../../constants/consts.js";
 
-const { col_start, col_end } = bot_consts.appendGoogleSheets.rawScoring;
+const col_start = "G"
+const col_end = "N"
 
 async function assembleRawScoring({sheets, spreadsheetId, range, romData}){
 

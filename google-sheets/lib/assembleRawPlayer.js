@@ -1,7 +1,7 @@
 import sheetsGet from "./sheetsGet.js";
-import { bot_consts } from "../../constants/consts.js";
 
-const { col_start, col_end } = bot_consts.appendGoogleSheets.rawPlayer;
+const col_start = "F"
+const col_end = "U"
 
 async function assembleRawPlayer({sheets, spreadsheetId, range, romData, nextGameId}){
 

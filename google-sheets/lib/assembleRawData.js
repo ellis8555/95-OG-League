@@ -1,7 +1,7 @@
 import sheetsGet from "./sheetsGet.js";
-import { bot_consts } from "../../constants/consts.js";
 
-const { col_start, col_end } = bot_consts.appendGoogleSheets.rawData;
+const col_start = "H"
+const col_end = "BP"
 
 async function assembleRawData({sheets, spreadsheetId, range, romData}){
 
