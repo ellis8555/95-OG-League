@@ -3,10 +3,8 @@ import assembleRawData from "./lib/assembleRawData.js";
 import assembleRawPlayer from './lib/assembleRawPlayer.js'
 import assembleRawPenalty from "./lib/assembleRawPenalty.js";
 import assembleRawScoring from "./lib/assembleRawScoring.js";
-import { bot_consts } from "../constants/consts.js";
 
-const { countRowRange } = bot_consts.appendGoogleSheets;
-
+const countRowRange = "H:H"
 
 async function appendGoogleSheetsData({sheets, spreadsheetId, romData}) {
 
