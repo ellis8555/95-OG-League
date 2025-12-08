@@ -1,7 +1,7 @@
 import getNextGameId from "./lib/getNextGameId.js";
 import assembleRawData from "./lib/assembleRawData.js";
 import assembleRawPlayer from './lib/assembleRawPlayer.js'
-import assembleRawPenalty from "./lib/assembleRawPenalty.js";
+// import assembleRawPenalty from "./lib/assembleRawPenalty.js";
 import assembleRawScoring from "./lib/assembleRawScoring.js";
 
 const countRowRange = "H:H"
@@ -58,26 +58,27 @@ async function appendGoogleSheetsData({sheets, spreadsheetId, romData}) {
         throw new Error("Error in processing the RawPlayer tab in sheets")
     }
 
-    ///////////////////
+    //////////////////////////
     // begin rawPenalty
-    ///////////////////
+    // no penalties as of now
+    //////////////////////////
 
-try {    
-    // get how many rows down new data to be appended
-    range = `RawPenalty!${countRowRange}`;
+// try {    
+//     // get how many rows down new data to be appended
+//     range = `RawPenalty!${countRowRange}`;
 
-    const { rawPenaltyEntries } = await assembleRawPenalty({
-        sheets,
-        spreadsheetId,
-        range,
-        romData
-    })
+//     const { rawPenaltyEntries } = await assembleRawPenalty({
+//         sheets,
+//         spreadsheetId,
+//         range,
+//         romData
+//     })
 
-    // TODO:
-    sheetEntries.push(rawPenaltyEntries)
-} catch (error) {
-    throw new Error("Error in processing the RawPentalty tab in sheets")
-}
+//     // TODO:
+//     sheetEntries.push(rawPenaltyEntries)
+// } catch (error) {
+//     throw new Error("Error in processing the RawPentalty tab in sheets")
+// }
 
     ////////////////////
     // begin rawScoring
