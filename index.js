@@ -1,6 +1,7 @@
 import fs from "node:fs/promises"
 import { google } from "googleapis";
 import readOgRomBinaryGameState from "./gameStateParsing/game-state/read-og-rom-game-state.js"
+import appendGoogleSheetsData from "./google-sheets/appendGoogleSheetsData.js"
 
 /////////////////////
 // google auth setup
@@ -9,14 +10,12 @@ import readOgRomBinaryGameState from "./gameStateParsing/game-state/read-og-rom-
 const getServiceAccountJSON = await fs.readFile("./serviceKeys.json");
 const serviceAccount = JSON.parse(getServiceAccountJSON)
 
-// Initialize the Sheets API client in the main thread
 const auth = new google.auth.GoogleAuth({
   credentials: serviceAccount,
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
-const sheets = google.sheets({ version: "v4", auth });
 
-const spreadSheetId = process.env.spreadSheetId
+const sheets = google.sheets({ version: "v4", auth });
 
 /////////////////
 // read game data
@@ -29,4 +28,22 @@ const gameFileBuffer = buffer.buffer.slice(
   buffer.byteOffset + buffer.byteLength
 );
 
-const gameData = await readOgRomBinaryGameState(gameFileBuffer)
+const romData = await readOgRomBinaryGameState(gameFileBuffer)
+
+/////////////////////////
+// write to google sheets
+/////////////////////////
+
+const spreadsheetId = process.env.spreadSheetId
+
+const sheetsArgsObj = {
+  sheets,
+  spreadsheetId,
+  romData
+}
+
+try {
+  await appendGoogleSheetsData(sheetsArgsObj)
+} catch (error) {
+    console.log('error in sending game data to google sheets')
+}
