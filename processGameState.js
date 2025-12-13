@@ -2,7 +2,6 @@ import fs from "node:fs/promises"
 import { google } from 'googleapis';
 import readOgRomBinaryGameState from "./gameStateParsing/game-state/read-og-rom-game-state.js"
 import appendGoogleSheetsData from "./google-sheets/appendGoogleSheetsData.js"
-import updateCoachesStreaks from "./google-sheets/coachesStreaks.js"
 
 async function processGameState(){
 
@@ -43,18 +42,8 @@ async function processGameState(){
     romData
   }
 
-  const infoForUpdatingStreak = {
-    sheets,
-    spreadsheetId,
-    homeCoach : 'Puss',
-    awayCoach : 'Heinz',
-    homeTeamScore : 5,
-    awayTeamScore : 0
-}
-  
   try {
     await appendGoogleSheetsData(sheetsArgsObj)
-    await updateCoachesStreaks(infoForUpdatingStreak)
   } catch (error) {
       console.log(error.message)
   }

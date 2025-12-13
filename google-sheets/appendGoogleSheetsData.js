@@ -121,14 +121,14 @@ async function appendGoogleSheetsData({sheets, spreadsheetId, romData}) {
     // update coaches streaks
     /////////////////////////
     try {        
-        const infoForUpdatingStreak = {
+            const infoForUpdatingStreak = {
             sheets,
             spreadsheetId,
             homeCoach : 'Puss',
             awayCoach : 'Krav',
             homeTeamScore : romData.data.homeTeamGameStats.HomeGOALS,
             awayTeamScore : romData.data.awayTeamGameStats.AwayGOALS
-        }
+    }
     
         await updateCoachesStreaks(infoForUpdatingStreak)
     } catch (error) {
