@@ -7,7 +7,7 @@ import updateCoachesStreaks from "./coachesStreaks.js"
 
 const countRowRange = "H:H"
 
-async function appendGoogleSheetsData({sheets, spreadsheetId, romData}) {
+async function appendGoogleSheetsData({sheets, spreadsheetId, romData, homeManager, awayManager}) {
 
     try {
     let range;
@@ -124,8 +124,8 @@ async function appendGoogleSheetsData({sheets, spreadsheetId, romData}) {
             const infoForUpdatingStreak = {
             sheets,
             spreadsheetId,
-            homeCoach : 'Puss',
-            awayCoach : 'Krav',
+            homeCoach : homeManager,
+            awayCoach : awayManager,
             homeTeamScore : romData.data.homeTeamGameStats.HomeGOALS,
             awayTeamScore : romData.data.awayTeamGameStats.AwayGOALS
     }
