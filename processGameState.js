@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 import readOgRomBinaryGameState from "./gameStateParsing/game-state/read-og-rom-game-state.js"
 import appendGoogleSheetsData from "./google-sheets/appendGoogleSheetsData.js"
 
-async function processGameState(){
+async function processGameState({homeManager, awayManager}){
 
   /////////////////
   // google auth
@@ -39,7 +39,9 @@ async function processGameState(){
   const sheetsArgsObj = {
     sheets,
     spreadsheetId,
-    romData
+    romData, 
+    homeManager,
+    awayManager
   }
 
   try {
