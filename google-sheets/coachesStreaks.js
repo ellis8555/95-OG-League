@@ -1,8 +1,4 @@
-////////////////
-// required vars
-////////////////
-
-// sheet params
+// RawStandings params
 const raw_standings_col_start = "A"
 const streak_col = "G"
 
@@ -12,10 +8,11 @@ export default async function updateCoachesStreaks({sheets, homeCoach, awayCoach
     // begin fetching streak
     ////////////////////////
 
-    // get correct rows in standings sheet to update a teams streak
+    // define all rows from RawStandings
     const range = `RawStandings!${raw_standings_col_start}:${streak_col}`
 
-    const managers_res = await sheets.spreadsheets.values.get({ // this gets every row in RawSchedule
+    // fetch every row in RawSchedule
+    const managers_res = await sheets.spreadsheets.values.get({ 
         spreadsheetId,
         range,
     })
@@ -24,12 +21,14 @@ export default async function updateCoachesStreaks({sheets, homeCoach, awayCoach
         throw new Error("Error in reading standings sheet in order to get coaches row")
     }
 
+    // extract the rows data from the fetch call
     const rawStandingsData = managers_res.data.values
     let homeCoachesRawStandings
     let awayCoachesRawStandings
     let homeCoachFound = false
     let awayCoachFound = false
 
+    // loop through each row looking for both managers
     for(let i = 0; i < rawStandingsData.length; i++){
         if(rawStandingsData[i][0] === homeCoach){
             homeCoachesRawStandings = i+1;
@@ -44,6 +43,7 @@ export default async function updateCoachesStreaks({sheets, homeCoach, awayCoach
         }
     }
 
+    // throw error if either manager is not found
     if(!homeCoachFound){
         throw new Error("Home teams coach not found.")
     }
@@ -51,18 +51,17 @@ export default async function updateCoachesStreaks({sheets, homeCoach, awayCoach
         throw new Error("Away teams coach not found.")
     }
 
+    // get each managers previous streak
     const previousHomeCoachesStreak = rawStandingsData[homeCoachesRawStandings-1][6]
     const previousAwayCoachesStreak = rawStandingsData[awayCoachesRawStandings-1][6]
 
-    // assign coaches name which will be used for updating streak column further down
-    // these are assigned in upcoming coaches forEach loop
+    // results will be assigned to these
     let homeTeamResult
     let awayTeamResult
     let updatedHomeCoachesStreak
     let updatedAwayCoachesStreak
 
-    // update each teams streak
-    // assign result status to each team
+    // update each managers result
     if(+homeTeamScore > +awayTeamScore){
         homeTeamResult = "W";
         awayTeamResult = "L";
@@ -74,7 +73,7 @@ export default async function updateCoachesStreaks({sheets, homeCoach, awayCoach
         awayTeamResult = "T";
     }
 
-    // set home teams streak
+    // update home managers streak
     if(previousHomeCoachesStreak === "-" || !previousHomeCoachesStreak){
         updatedHomeCoachesStreak = "1" + homeTeamResult
     } else {
@@ -123,7 +122,7 @@ export default async function updateCoachesStreaks({sheets, homeCoach, awayCoach
             updatedHomeCoachesStreak = updatedStreakLength.toString() + updatedStreaktype
     }
 
-    // set away teams streak
+    // update away managers streak
     if(previousAwayCoachesStreak === "-"|| !previousAwayCoachesStreak){
         updatedAwayCoachesStreak = "1" + awayTeamResult
     } else {
@@ -187,6 +186,7 @@ export default async function updateCoachesStreaks({sheets, homeCoach, awayCoach
         ++indexNum
     })
 
+    // update the sheet
     await sheets.spreadsheets.values.batchUpdate({
         spreadsheetId,
         requestBody: {
