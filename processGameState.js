@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 import readOgRomBinaryGameState from "./gameStateParsing/game-state/read-og-rom-game-state.js"
 import appendGoogleSheetsData from "./google-sheets/appendGoogleSheetsData.js"
 
-async function processGameState({homeManager, awayManager}){
+async function processGameState({gameState, homeManager, awayManager}){
 
   /////////////////
   // google auth
@@ -21,7 +21,7 @@ async function processGameState({homeManager, awayManager}){
   // read game data
   /////////////////
   
-  const buffer = await fs.readFile("./NHL_95.state30")
+  const buffer = await fs.readFile(gameState)
   
   const gameFileBuffer = buffer.buffer.slice(
     buffer.byteOffset,
