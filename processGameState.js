@@ -56,7 +56,7 @@ async function processGameState(){
     await appendGoogleSheetsData(sheetsArgsObj)
     await updateCoachesStreaks(infoForUpdatingStreak)
   } catch (error) {
-      console.log('error in sending game data to google sheets')
+      console.log(error.message)
   }
 }
 
