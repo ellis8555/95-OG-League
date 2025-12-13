@@ -3,6 +3,7 @@ import assembleRawData from "./lib/assembleRawData.js";
 import assembleRawPlayer from './lib/assembleRawPlayer.js'
 // import assembleRawPenalty from "./lib/assembleRawPenalty.js";
 import assembleRawScoring from "./lib/assembleRawScoring.js";
+import updateCoachesStreaks from "./coachesStreaks.js"
 
 const countRowRange = "H:H"
 
@@ -114,6 +115,24 @@ async function appendGoogleSheetsData({sheets, spreadsheetId, romData}) {
         valueInputOption: "RAW",
         resource,
         });
+    }
+
+    /////////////////////////
+    // update coaches streaks
+    /////////////////////////
+    try {        
+        const infoForUpdatingStreak = {
+            sheets,
+            spreadsheetId,
+            homeCoach : 'Puss',
+            awayCoach : 'Krav',
+            homeTeamScore : romData.data.homeTeamGameStats.HomeGOALS,
+            awayTeamScore : romData.data.awayTeamGameStats.AwayGOALS
+        }
+    
+        await updateCoachesStreaks(infoForUpdatingStreak)
+    } catch (error) {
+        throw new Error("Error in processing managers streaks")
     }
 
     return nextGameId
