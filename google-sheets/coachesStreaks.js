@@ -2,7 +2,7 @@
 const raw_standings_col_start = "A"
 const streak_col = "G"
 
-export default async function updateCoachesStreaks({sheets, homeCoach, awayCoach, homeTeamScore, awayTeamScore}){
+export default async function updateCoachesStreaks({sheets, spreadsheetId, homeCoach, awayCoach, homeTeamScore, awayTeamScore}){
 
     ////////////////////////
     // begin fetching streak

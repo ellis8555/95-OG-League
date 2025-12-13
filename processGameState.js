@@ -45,6 +45,7 @@ async function processGameState(){
 
   const infoForUpdatingStreak = {
     sheets,
+    spreadsheetId,
     homeCoach : 'Puss',
     awayCoach : 'Heinz',
     homeTeamScore : 5,
