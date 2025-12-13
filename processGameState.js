@@ -1,4 +1,3 @@
-import fs from "node:fs/promises"
 import { google } from 'googleapis';
 import readOgRomBinaryGameState from "./gameStateParsing/game-state/read-og-rom-game-state.js"
 import appendGoogleSheetsData from "./google-sheets/appendGoogleSheetsData.js"
@@ -21,14 +20,7 @@ async function processGameState({gameState, homeManager, awayManager}){
   // read game data
   /////////////////
   
-  const buffer = await fs.readFile(gameState)
-  
-  const gameFileBuffer = buffer.buffer.slice(
-    buffer.byteOffset,
-    buffer.byteOffset + buffer.byteLength
-  );
-  
-  const romData = await readOgRomBinaryGameState(gameFileBuffer)
+  const romData = await readOgRomBinaryGameState(gameState)
   
   /////////////////////////
   // write to google sheets
