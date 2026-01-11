@@ -403,7 +403,7 @@ client.on('messageCreate', async message => {
       const uniqueIdsFile = fs.readFileSync(p_uniqueIdsFilePath, "utf-8")
 
       const { teamCodesList: teamCodes, coaches, excludeCoaches, p_games_vs_opponents } = pure_consts
-      await mentionRemainingOpponents(p_seasonGamesChannelId, excludeCoaches, {client, coachId, teamCodes, userMessage, coaches, uniqueIdsFile, p_games_vs_opponents})
+      await mentionRemainingOpponents(p_seasonGamesChannelId, excludeCoaches, {client, coachId, teamCodes, coaches, uniqueIdsFile, p_games_vs_opponents})
       return;
      }
    }
