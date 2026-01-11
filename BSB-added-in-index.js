@@ -12,7 +12,12 @@ import { nhlEmojiMap } from './nhlEmojiMap.js';
 import { generateSeasonRecap } from './recap.js';
 import { handleGuildMemberAdd } from './welcome.js';
 import { parseSiriInput, postToDiscord } from './siriPost.js';
+
+// imports added in from BSB
 import { pure_consts } from './pure-league/constants/consts.js'
+import processPure from './pure-league/lib/processPure.js';
+import setPureSettings from './pure-league/lib/setPureSettings.js';
+import mentionRemainingOpponents from './pure-league/lib/mentionRemainingOpponents.js'
 
 // === Imports for ELO Charting ===
 import { getSheetData } from './nhl95-elo-chart/fetchELO.js';
@@ -47,6 +52,10 @@ let p_submitScoresChannelId
 let p_seasonGamesChannelId
 
 client.once('ready', () => {
+  ////////////////////////////////////////////////////////
+  // ADDED IN FROM BSB TO ENTER SCORES AND UPDATE SETTINGS
+  ////////////////////////////////////////////////////////
+
   // channel listening for save states
   const p_submitScoresListeningChannel = p_guild.channels.cache.find(channel => channel.name === p_submitScoresChannel)
   if(p_submitScoresListeningChannel){
@@ -62,6 +71,10 @@ client.once('ready', () => {
     } else {
       console.log(`Channel p_seasonGamesChannelId' not found.`)
     } 
+
+  ////////////////////////
+  // END ADDED IN FROM BSB
+  ////////////////////////
 
   console.log(`✅ Logged in as ${client.user.tag}`);
 });
@@ -348,6 +361,56 @@ client.on('messageCreate', async message => {
       break;
     }
   }
+
+  ////////////////////////////////////////////////////////
+  // ADDED IN FROM BSB TO ENTER SCORES AND UPDATE SETTINGS
+  ////////////////////////////////////////////////////////
+
+  const channelId = message.channel.id; 
+  // pure league score listening block
+  if(channelId === p_submitScoresChannelId){
+    // get sheets auth
+    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+
+    const sheets = google.sheets({ version: 'v4', auth });
+
+    // begin processing score channel message
+    const userMessage = message.content
+    if(userMessage === 'UPDATE SETTINGS'){
+      if(message.author.id === pure_consts.editPermission['ticklepuss']){
+        setPureSettings({sheets, message})
+      }
+    } else {
+      // process a score entry
+      await processPure({sheets, message})
+    }
+    return;
+  }
+    // season games listening block
+  if(channelId === p_seasonGamesChannelId){
+    const coachId = message.author.id
+    const userMessage = message.content
+
+    const seasonGamesPattern = /^[Ss]eason [Gg]ames( ([1-9]|1[0-2])([0-5][0-9])?[APap][Mm])?$/
+
+    if(seasonGamesPattern.test(message.content)){     
+      // get gamesplayed data from unique id's file
+      const p_uniqueIdsFilePath = path.join(__dirname, "pure-league", "public", "pUniqueIds.csv")
+      const uniqueIdsFile = fs.readFileSync(p_uniqueIdsFilePath, "utf-8")
+
+      const { teamCodesList: teamCodes, coaches, excludeCoaches, p_games_vs_opponents } = pure_consts
+      await mentionRemainingOpponents(p_seasonGamesChannelId, excludeCoaches, {client, coachId, teamCodes, userMessage, coaches, uniqueIdsFile, p_games_vs_opponents})
+      return;
+     }
+   }
+
+  ////////////////////////
+  // END ADDED IN FROM BSB
+  ////////////////////////
 });
 
 
