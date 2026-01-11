@@ -1,7 +1,7 @@
 async function mentionRemainingOpponents(
   seasonGamesChannelId,
   excludeCoaches = [],
-  { client, coachId, teamCodes, messageId, userMessage, coaches, uniqueIdsFile, p_games_vs_opponents }
+  { client, coachId, teamCodes, coaches, uniqueIdsFile, p_games_vs_opponents }
 ) {
   const channel = client.channels.cache.get(seasonGamesChannelId);
   if (!channel) return;
@@ -43,10 +43,9 @@ async function mentionRemainingOpponents(
   }
 
   // Determine minimum number of remaining teams to check for "season complete"
-  let leaguesTeamCodesFloor = 1;
-  if (server === pureServer) {
-    leaguesTeamCodesFloor = 26 - coaches.length + 1; // Pure league special case
-  }
+
+  const leaguesTeamCodesFloor = 26 - coaches.length + 1; // Pure league special case
+
 
   if (teamCodes.length > leaguesTeamCodesFloor) {
     // Exclude coaches who should not be mentioned
@@ -69,47 +68,11 @@ async function mentionRemainingOpponents(
       }
     });
 
-    // Add team logo for W and Q leagues
-    if (server !== pureServer) {
-      seasonGamesCall += `\n<:${coachObject.emojiName}:${coachObject.emojiId}>`;
-    }
-
-    // Handle special custom messages
-    const champCoach = coaches.find(c => c.team === "SUM");
-    const jeelockCoach = coaches.find(c => c.team === "SAG");
-    let isRequestByJeelockExtended = false;
-    let timePortion;
-    const messageParts = userMessage.split(" ");
-
-    if (champCoach && coachId === champCoach.id) {
-      seasonGamesCall += `\n:trophy: Games vs ${coachName} :trophy:`;
-    } else if (jeelockCoach && coachId === jeelockCoach.id) {
-      let customMessage = "";
-      if (messageParts.length > 2) {
-        messageParts.splice(0, 2);
-        customMessage = messageParts.join(" ");
-        isRequestByJeelockExtended = true;
-      }
-      seasonGamesCall += `\nGames vs ${coachName} ${customMessage ? customMessage : ""}?`;
-    } else {
-      if (messageParts.length === 3) timePortion = messageParts[2];
-      seasonGamesCall += `\nGames vs ${coachName} ${timePortion ? timePortion + " or later" : ""}?`;
-    }
-
-    // Delete original message if Jeelock custom message
-    if (isRequestByJeelockExtended) {
-      const originalMessage = await channel.messages.fetch(messageId);
-      await originalMessage.delete();
-    }
+    seasonGamesCall += `\n<:${coachObject.emojiName}:${coachObject.emojiId}>`;
 
     await channel.send(seasonGamesCall);
   } else {
-    // Season complete message
-    if (server === w_server || server === q_server) {
-      await channel.send(`<:${coachObject.emojiName}:${coachObject.emojiId}>\n${teamAbbreviation} season is complete`);
-    } else if (server === pureServer) {
       await channel.send(`${coachName} season is complete`);
-    }
   }
 }
 
