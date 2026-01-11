@@ -1,9 +1,8 @@
 {
-  "currentSeason": "9",
+  "currentSeason": "18",
   "seasonGamesChannel": "s18-games",
   "p_games_vs_opponents": 2,
   "listeningChannel": "pure-scores",
-  "p_uniqueIdsFileName": "pUniqueIds.csv",
   "writeToGoogleSheets": true,
   "pureLeagueScoreExpression": "^\\s*(?:EDIT\\s+)?[a-zA-Z]{3}\\s+(\\d+)\\s*-\\s+[a-zA-Z]{3}\\s+(\\d+)\\s*$",
   "editPermission": {
