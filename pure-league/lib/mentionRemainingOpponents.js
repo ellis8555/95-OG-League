@@ -46,7 +46,6 @@ async function mentionRemainingOpponents(
 
   const leaguesTeamCodesFloor = 26 - coaches.length + 1; // Pure league special case
 
-
   if (teamCodes.length > leaguesTeamCodesFloor) {
     // Exclude coaches who should not be mentioned
     excludeCoaches.forEach(team => {
@@ -67,8 +66,6 @@ async function mentionRemainingOpponents(
           : `@${coachObj.user}`;
       }
     });
-
-    seasonGamesCall += `\n<:${coachObject.emojiName}:${coachObject.emojiId}>`;
 
     await channel.send(seasonGamesCall);
   } else {
