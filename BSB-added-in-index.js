@@ -393,7 +393,6 @@ client.on('messageCreate', async message => {
     // season games listening block
   if(channelId === p_seasonGamesChannelId){
     const coachId = message.author.id
-    const userMessage = message.content
 
     const seasonGamesPattern = /^[Ss]eason [Gg]ames( ([1-9]|1[0-2])([0-5][0-9])?[APap][Mm])?$/
 
