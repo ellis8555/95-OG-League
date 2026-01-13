@@ -53,13 +53,20 @@ async function setPureSettings({sheets, message}){
         })
 
         if(res.status !== 200 || res.statusText !== "OK"){
-            throw new Error("Error in reading BSB settings sheet")
+            throw new Error("Error in reading Adam settings sheet")
         }
 
         // read in previous settings from file
-        const filePath = path.join(__dirname, "..", "public", "pure_bot_constants.json")
-        const file = readFileSync(filePath, "utf-8")
-        const pureSettings = JSON.parse(file)
+        let filePath
+        let file
+        let pureSettings
+        try {            
+            filePath = path.join(__dirname, "..", "public", "pure_bot_constants.json")
+            file = readFileSync(filePath, "utf-8")
+            pureSettings = JSON.parse(file)
+        } catch (error) {
+            throw new Error('Error in trying to read file pure_bot_constants.json')
+        }
 
         const [channelSettings, coachDetails] = res.data.valueRanges
 
@@ -102,7 +109,11 @@ async function setPureSettings({sheets, message}){
         pureSettings.writeToGoogleSheets = writeToGoogleSheets
         pureSettings.coaches = updatedCoaches
         // rewrite pure_bot_constants.json
-        writeFileSync(filePath, JSON.stringify(pureSettings, null, 2), "utf-8")
+        try {
+            writeFileSync(filePath, JSON.stringify(pureSettings, null, 2), "utf-8")
+        } catch (error) {
+            throw new Error("Error in trying to write to file updated pure_bot_constants.json")
+        }
         await message.channel.send("Settings have been updated")
     } catch (error) {
         // ignore coachObj is not defined (sheet overextends)
